@@ -1,5 +1,9 @@
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.Belief;
+import jadex.bdiv3.annotation.Goal;
+import jadex.bdiv3.annotation.Goal.ExcludeMode;
+import jadex.bdiv3.annotation.GoalMaintainCondition;
+import jadex.bdiv3.annotation.GoalTargetCondition;
 import jadex.bdiv3.annotation.Plan;
 import jadex.bdiv3.annotation.Trigger;
 import jadex.bdiv3.runtime.ChangeEvent;
@@ -23,20 +27,25 @@ public class SellerAgentBDI implements ISellService {
 	@Agent
 	protected BDIAgent agent;
 
+	//Beliefs 
+
+	@Belief
 	private String product;
+	
+	@Belief
+	private String getProduct()
+	{
+		return this.product;
+	}
+	
+	@Belief
+	private void setProduct(String product)	{
+		this.product = product;
+	}
+	
+	@Belief
 	private int price;
-	private int stock; 
-
-	@Belief
-	public int getStock() {
-		return stock;
-	}
-
-	@Belief
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
-
+	
 	@Belief
 	public int getPrice() {
 		return price;
@@ -46,91 +55,130 @@ public class SellerAgentBDI implements ISellService {
 	public void setPrice(int price) {
 		this.price = price;
 	}
+	
+	@Belief
+	private int negotiationPriceLimit = 600;
+		
 
-	@Belief(dynamic = true)
-	protected boolean isHigherThanLimit = (stock == 30);
+    @Belief
+	private int stock; 
+	
+	@Belief
+	public int getStock() {
+		return stock;
+	}
 
+	@Belief
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+	
+	@Belief
+	private int stockLimit = 1000; 
+
+	private boolean stopIncoming;
+	
+	/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
+	
+	//Goals
+	
+	@Goal(excludemode=ExcludeMode.Never)
+	public class MaintainStorageGoal			//Goal that prevents stock from reaching limit by by triggering implementPromotion plan
+	{
+		@GoalMaintainCondition(beliefs={"stock"})
+		protected boolean maintain()
+		{
+			if(getStock() > (0.20*stockLimit))  //Implements promotion plan when stock is higher than 20% of the stockLimit (supostamente xD)
+			{
+				stopIncoming = true;
+				return false;
+			}
+			else
+			{
+				stopIncoming = false;
+				return true;
+			}
+		}
+
+		@GoalTargetCondition(beliefs={"stock"})
+		protected boolean target()
+		{
+			return getStock()<99;
+		}
+	} 
+	
+	/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
+	
+	//Plans
 
 	@Plan(trigger=@Trigger(factchangeds="price"))
 	public void checkPricePlan(ChangeEvent event, IPlan plan) {
-		int s = (int) event.getValue();		
-		System.out.println("New Price: " + s);
+		Integer s;
+        s = (Integer) event.getValue();
+        System.out.println("New Price: " + s);
 	}
 
-	@Plan(trigger=@Trigger(factchangeds="stock"))
-	public void checkNewStockPlan(ChangeEvent event, IPlan plan) {
-		int v = (int) event.getValue();
-		if(v > 50)
-		{
-			System.out.println("Stock is getting full, start promotion.");
-			this.setPrice(price-5);
-		}
-		else
-		{
-			System.out.println("New Stock Size: " + v);
-		}
+	@Plan(trigger=@Trigger(goals=MaintainStorageGoal.class))
+	public void implementPromotion() {
+
+		System.out.println("Stock is getting full, start promotion.");
+		stopIncoming = true;
+		this.setPrice(price-5);
+		this.setStock(stock-25);
+		System.out.println("PROMOTIONS!! New Price: " + this.price);
+
 	}
+	
+	/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 
 	@AgentCreated
 	public void init() {
 		this.product = "Samsung Galaxy S5";
-		this.price = 20;
+		this.price = 729;
 		this.stock = 25;
-		this.isHigherThanLimit = false;
+		this.stopIncoming = false;
 	}
 
 	@AgentBody
 	public void body() {
-
+		agent.dispatchTopLevelGoal(new MaintainStorageGoal());
 		agent.waitForDelay(1000).get();
 
-		System.out.println("---");
-		System.out.println("Stock Actual: " + this.stock);
-		System.out.println("Recebi 3 produtos");
-		this.setStock(stock + 3);
-		agent.waitForDelay(5000).get();
+		while(true)
+		{
+			if(stock <= stockLimit)
+				stopIncoming = false;
+			else
+				stopIncoming = true;
+			
+			
+			if(!stopIncoming)
+			{
+				System.out.println("---");
+				System.out.println("Stock Actual: " + this.stock);
+				System.out.println("Recebi 15 produtos");
+				this.setStock(stock + 15);
+				agent.waitForDelay(1000).get();
+				System.out.println("---");
+			}
+			else
+			{
+				System.out.println("O stock encontra-se cheio, foi ordenada uma paragem na receção de equipamentos!");
+			}
 
-		System.out.println("---");
-		System.out.println("Recebi 2 produtos");
-		this.setStock(stock + 2);
-		agent.waitForDelay(5000).get();
 
-		System.out.println("---");		
-		System.out.println("Recebi 1 produtos");
-		this.setStock(stock + 1);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 5 produtos");
-		this.setStock(stock + 5);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 3 produtos");
-		this.setStock(stock + 3);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 10 produtos");
-		this.setStock(stock + 10);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 2 produtos");
-		this.setStock(stock + 2);
-		agent.waitForDelay(5000).get();
-
-		System.out.println("---");
+			agent.waitForDelay(2000).get();
+		}
 	}
 
 	@Override
-	public IFuture<Boolean> buyRequest(String prod, int num) {
+	public IFuture<Boolean> buyRequest(Request r) {
 
-		if(prod.equals(this.product))
+		if(r.getProduct().equals(this.product))
 		{
 			System.out.println("Uma compra foi efectuada com sucesso!!");
-			this.stock = this.stock-num;
+			this.stock = this.stock - r.getNumberOfItems();
 			return new Future<Boolean>(true);
 		}
 

@@ -23,9 +23,9 @@ public class BuyerAgentBDI  {
 
 			@Override
 			public void intermediateResultAvailable(ISellService is) {
-				
-				System.out.println("Vou comprar 2 Samsungs Galaxy S5!");
-				is.buyRequest("Samsung Galaxy S5", 2);
+				Request r = new Request("Samsung Galaxy S5", 10);
+				System.out.println("Vou comprar 10 Samsungs Galaxy S5!");
+				is.buyRequest(r);
 			}
 				});	
 	}
