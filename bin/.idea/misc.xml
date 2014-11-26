@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="jadex.bdiv3.annotation.Belief" />
+      <item index="1" class="java.lang.String" itemvalue="jadex.bdiv3.annotation.Goal" />
+      <item index="2" class="java.lang.String" itemvalue="jadex.bdiv3.annotation.Plan" />
+      <item index="3" class="java.lang.String" itemvalue="jadex.micro.annotation.AgentBody" />
+      <item index="4" class="java.lang.String" itemvalue="jadex.micro.annotation.AgentCreated" />
+    </list>
+  </component>
+  <component name="IdProvider" IDEtalkID="43A374DCB55744AFBC293E66B991808E" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7 (1)" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7 (1)</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

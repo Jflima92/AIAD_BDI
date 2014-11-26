@@ -125,6 +125,7 @@ public class SellerAgentBDI implements ISellService {
 			public void run() {
 				System.out.println("here");
 				configurations = new SellerAgentConfigurations();
+
 				product = configurations.getInsertProductNameTextField().toString();
 				price = configurations.getInsertInitialPriceTextField();
 				stock = configurations.getInitialStockTextField();
