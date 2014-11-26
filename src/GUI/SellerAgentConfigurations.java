@@ -24,22 +24,22 @@ public class SellerAgentConfigurations extends JFrame{
     public SellerAgentConfigurations() {
 
         super("Agent Configuration");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(rootPanel);
+        System.out.println("damns");
+        System.out.println("go");
+
+        this.setContentPane(rootPanel);
         pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        System.out.println("estou visivel");
         createSellerAgentButton.addActionListener(new ButtonListener());
     }
-
 
     public class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             doneSignal.countDown();
         }
     }
-
-
-
 
     public String getInsertProductNameTextField() {
         return insertProductNameTextField.toString();
