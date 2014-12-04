@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/activation-1.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/antlr-2.7.7.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/antlr-runtime-3.1.3.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/asm4-4.0.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/bcprov-jdk15-140.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/bridj-0.6.2.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/collections-generic-4.01.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/colt-1.2.0.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/concurrent-1.3.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/de.huxhorn.sulky.3rdparty.jlayer-1.0.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/dx-1.7.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/filters-2.0.235-1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/gluegen-rt-1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applib-bdi-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-bdi-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-bdibpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-bdiv3-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-bpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-gpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-applications-micro-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-bridge-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-commons-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-javaparser-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-application-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-base-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-bdi-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-bdibpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-bdiv3-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-bpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-component-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-extension-agr-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-extension-envsupport-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-extension-envsupport-opengl-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-gpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-kernel-micro-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-model-bpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-nuggets-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-platform-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-platform-standalone-launch-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-rules-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-rules-applications-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-rules-eca-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-rules-tools-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-runtimetools-swing-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-tools-base-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-tools-base-swing-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-tools-bdi-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-tools-bpmn-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-tools-comanalyzer-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jadex-xml-2.4.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/janino-2.5.10.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/javassist-3.12.1.GA.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jcalendar-1.3.2.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jcodec-0.1.5.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jcommon-1.0.15.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jfreechart-1.0.12.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jogl-1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jung-algorithms-2.0.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jung-api-2.0.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jung-graph-impl-2.0.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/jung-visualization-2.0.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/junit-3.8.1.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/mail-1.4.5.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/slf4j-api-1.7.2.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/smack-3.1.0.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/smackx-3.1.0.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/stringtemplate-3.2.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/webcam-capture-0.3.9.jar!/" />
+    <libelement value="jar://$USER_HOME$/Transferências/jadex-2.4/lib/xpp3-1.1.4c.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/AIAD_BDI" />
+      <excludeFolder url="file://$MODULE_DIR$/src/test" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Transferências/jadex-2.5-SNAPSHOT/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Transferências/jadex-2.5-SNAPSHOT/lib" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>

@@ -1,20 +1,23 @@
+import GUI.SellerAgentConfigurations;
 import jadex.bdiv3.BDIAgent;
-import jadex.bdiv3.annotation.Belief;
-import jadex.bdiv3.annotation.Plan;
-import jadex.bdiv3.annotation.Trigger;
+import jadex.bdiv3.annotation.*;
 import jadex.bdiv3.runtime.ChangeEvent;
 import jadex.bdiv3.runtime.IPlan;
 import jadex.bridge.service.annotation.Service;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
-import jadex.micro.annotation.Agent;
-import jadex.micro.annotation.AgentBody;
-import jadex.micro.annotation.AgentCreated;
-import jadex.micro.annotation.Description;
-import jadex.micro.annotation.ProvidedServices;
-import jadex.micro.annotation.ProvidedService;
+import jadex.micro.annotation.*;
+
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+
 
 @Agent
+@Arguments({
+		@Argument(name="product", clazz=String.class, defaultvalue="N/A"),
+		@Argument(name="initPrice", clazz=Integer.class, defaultvalue="-1"),
+		@Argument(name="initStock", clazz=Integer.class, defaultvalue="-1")
+})
 @Service
 @Description("This agent sells products.")
 @ProvidedServices(@ProvidedService(type=ISellService.class))
@@ -25,7 +28,10 @@ public class SellerAgentBDI implements ISellService {
 
 	private String product;
 	private int price;
-	private int stock; 
+	private int stock;
+	private boolean stopIncoming;
+	private Request req;
+
 
 	@Belief
 	public int getStock() {
@@ -47,19 +53,57 @@ public class SellerAgentBDI implements ISellService {
 		this.price = price;
 	}
 
-	@Belief(dynamic = true)
-	protected boolean isHigherThanLimit = (stock == 30);
-
-
-	@Plan(trigger=@Trigger(factchangeds="price"))
-	public void checkPricePlan(ChangeEvent event, IPlan plan) {
-		int s = (int) event.getValue();		
-		System.out.println("New Price: " + s);
+	@Belief
+	public Request getReq() {
+		return req;
 	}
+
+	@Belief
+	public void setReq(Request req) {
+		this.req = req;
+	}
+
+
+	@Goal
+	public class queryBuyerAgent
+	{
+
+		@GoalResult
+		protected Request re;
+
+
+		public queryBuyerAgent(Request r)
+		{
+			this.re = r;
+		}
+
+	}
+
+
+	@Plan(trigger=@Trigger(factchangeds = "req"))
+	public void analyzeRequest(ChangeEvent event) {
+		Request s;
+		s = (Request) event.getValue();
+
+		if(s.getPrice() == this.getPrice())
+		{
+			System.out.println("The price was matched, checking number availability...");
+			agent.waitForDelay(500);
+
+			if(s.getNumberOfItems() <= this.getStock())
+			{
+				System.out.println("There is enough stock to provide your request, purchase order confirmed.");
+				this.setStock(this.stock - s.getNumberOfItems());
+			}
+		}
+		else
+			System.out.println("Price not matched, please send a better request!");
+	}
+
 
 	@Plan(trigger=@Trigger(factchangeds="stock"))
 	public void checkNewStockPlan(ChangeEvent event, IPlan plan) {
-		int v = (int) event.getValue();
+		Integer v = (Integer) event.getValue();
 		if(v > 50)
 		{
 			System.out.println("Stock is getting full, start promotion.");
@@ -74,10 +118,24 @@ public class SellerAgentBDI implements ISellService {
 
 	@AgentCreated
 	public void init() {
-		this.product = "Samsung Galaxy S5";
-		this.price = 20;
+		System.out.println("here");
+
+		product = (String) agent.getArgument("product");
+		price = (Integer) agent.getArgument("initPrice");
+		stock = (Integer) agent.getArgument("initStock");
+		stopIncoming = false;
+
+		/*this.product = configurations.getInsertProductNameTextField().toString();
+		this.price = configurations.getInsertInitialPriceTextField();
+		this.stock = configurations.getInitialStockTextField();
+		this.stopIncoming = false;*/
+
+
+		/*this.product = "Samsung Galaxy S5";
+		this.price = 729;
 		this.stock = 25;
-		this.isHigherThanLimit = false;
+		this.stopIncoming = false;*/
+
 	}
 
 	@AgentBody
@@ -85,56 +143,28 @@ public class SellerAgentBDI implements ISellService {
 
 		agent.waitForDelay(1000).get();
 
-		System.out.println("---");
-		System.out.println("Stock Actual: " + this.stock);
-		System.out.println("Recebi 3 produtos");
-		this.setStock(stock + 3);
-		agent.waitForDelay(5000).get();
+		while(!stopIncoming) {
 
-		System.out.println("---");
-		System.out.println("Recebi 2 produtos");
-		this.setStock(stock + 2);
-		agent.waitForDelay(5000).get();
-
-		System.out.println("---");		
-		System.out.println("Recebi 1 produtos");
-		this.setStock(stock + 1);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 5 produtos");
-		this.setStock(stock + 5);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 3 produtos");
-		this.setStock(stock + 3);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 10 produtos");
-		this.setStock(stock + 10);
-		agent.waitForDelay(5000).get();
-		
-		System.out.println("---");		
-		System.out.println("Recebi 2 produtos");
-		this.setStock(stock + 2);
-		agent.waitForDelay(5000).get();
-
-		System.out.println("---");
+			System.out.println("---");
+			System.out.println("Recebi 10 produtos");
+			this.setStock(stock + 10);
+			agent.waitForDelay(5000).get();
+			System.out.println("---");
+		}
 	}
 
 	@Override
-	public IFuture<Boolean> buyRequest(String prod, int num) {
+	public IFuture<Boolean> buyRequest(Request r) {
 
-		if(prod.equals(this.product))
+		if(r.getProduct().equals(this.product))
 		{
-			System.out.println("Uma compra foi efectuada com sucesso!!");
-			this.stock = this.stock-num;
+			this.setReq(r);
+			System.out.println("New request received for approval! ");
 			return new Future<Boolean>(true);
 		}
-
 		System.out.println("Não vendo o que está a comprar :(!");
 		return new Future<Boolean>(false);
 	}
 }
+
+// TODO - Implement GUI to proper start agents with user input. - Review connections and BDI.
