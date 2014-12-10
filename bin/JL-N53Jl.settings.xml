@@ -8,7 +8,7 @@
 			<p0:property __ID="5" type="tree"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
 <p0:TreeProperties xmlns:p0="typeinfo:jadex.base.gui.filetree" __ID="0">
 	<selectedNode>
-		<p0:NodePath __ID="1" entry="0">
+		<p0:NodePath __ID="1" entry="1">
 			<path>
 				<p1:String__1 xmlns:p1="typeinfo:java.lang" __ID="2" __len="0"></p1:String__1>
 			</path>
@@ -35,59 +35,62 @@
 			</p0:properties>
 		</p0:properties>
 		<p0:properties __ID="11" type="spanel">
-			<p0:property __ID="12" type="model">bin/BuyerAgentBDI.class</p0:property>
-			<p0:property __ID="13" type="ridurl">file:bin/BuyerAgentBDI.class</p0:property>
+			<p0:property __ID="12" type="model">bin/SellerAgentBDI.class</p0:property>
+			<p0:property __ID="13" type="ridurl">file:bin/SellerAgentBDI.class</p0:property>
 			<p0:property __ID="14" type="globalrid"></p0:property>
 			<p0:property __ID="15" type="startsuspended">false</p0:property>
 			<p0:property __ID="16" type="autogenerate">false</p0:property>
 			<p0:property __ID="17" type="number">1</p0:property>
-			<p0:property __ID="18" type="name">BuyerAgent</p0:property>
+			<p0:property __ID="18" type="name">SellerAgent</p0:property>
+			<p0:property __ID="19" type="argument"></p0:property>
+			<p0:property __ID="20" type="argument"></p0:property>
+			<p0:property __ID="21" type="argument"></p0:property>
 		</p0:properties>
 	</p0:properties>
-	<p0:properties __ID="19" type="chat.system">
-		<p0:property __ID="20" type="nickname">user_b8c</p0:property>
+	<p0:properties __ID="22" type="chat.system">
+		<p0:property __ID="23" type="nickname">user_a5b</p0:property>
 	</p0:properties>
-	<p0:properties __ID="21" type="awa">
-		<p0:property __ID="22" type="fast">false</p0:property>
-		<p0:property __ID="23" type="autocreate">true</p0:property>
-		<p0:property __ID="24" type="autodelete">true</p0:property>
+	<p0:properties __ID="24" type="awa">
+		<p0:property __ID="25" type="fast">false</p0:property>
+		<p0:property __ID="26" type="autocreate">true</p0:property>
+		<p0:property __ID="27" type="autodelete">true</p0:property>
 	</p0:properties>
-	<p0:properties __ID="25" type="simulationservice">
-		<p0:property __ID="26" type="executing">true</p0:property>
+	<p0:properties __ID="28" type="simulationservice">
+		<p0:property __ID="29" type="executing">true</p0:property>
 	</p0:properties>
-	<p0:properties __ID="27" type="securityservice">
-		<p0:property __ID="28" type="validityduration">327680</p0:property>
-		<p0:property __ID="29" type="usepass">true</p0:property>
-		<p0:property __ID="30" type="password">22b1e053-a4b</p0:property>
-		<p0:property __ID="31" type="selected_mechanism">0</p0:property>
-		<p0:property __ID="32" type="trustedlan">false</p0:property>
-		<p0:property __ID="33" type="storepath">./keystore</p0:property>
-		<p0:property __ID="34" type="storepass">keystore</p0:property>
-		<p0:property __ID="35" type="keypass">keystore</p0:property>
-		<p0:property __ID="36" type="selmech">0</p0:property>
-		<p0:properties __ID="37" type="DecentralizedAcquisitionMechanism">
-			<p0:property __ID="38" type="responses">1</p0:property>
+	<p0:properties __ID="30" type="securityservice">
+		<p0:property __ID="31" type="validityduration">327680</p0:property>
+		<p0:property __ID="32" type="usepass">true</p0:property>
+		<p0:property __ID="33" type="password">22b1e053-a4b</p0:property>
+		<p0:property __ID="34" type="selected_mechanism">0</p0:property>
+		<p0:property __ID="35" type="trustedlan">false</p0:property>
+		<p0:property __ID="36" type="storepath">./keystore</p0:property>
+		<p0:property __ID="37" type="storepass">keystore</p0:property>
+		<p0:property __ID="38" type="keypass">keystore</p0:property>
+		<p0:property __ID="39" type="selmech">0</p0:property>
+		<p0:properties __ID="40" type="DecentralizedAcquisitionMechanism">
+			<p0:property __ID="41" type="responses">1</p0:property>
 		</p0:properties>
-		<p0:properties __ID="39" type="TTPAcquisitionMechanism">
-			<p0:property __ID="40" type="verify">true</p0:property>
+		<p0:properties __ID="42" type="TTPAcquisitionMechanism">
+			<p0:property __ID="43" type="verify">true</p0:property>
 		</p0:properties>
 	</p0:properties>
-	<p0:properties __ID="41" type="clockservice">
-		<p0:property __ID="42" type="type">system</p0:property>
-		<p0:property __ID="43" type="delta">100</p0:property>
-		<p0:property __ID="44" type="dilation">1.0</p0:property>
+	<p0:properties __ID="44" type="clockservice">
+		<p0:property __ID="45" type="type">system</p0:property>
+		<p0:property __ID="46" type="delta">100</p0:property>
+		<p0:property __ID="47" type="dilation">1.0</p0:property>
 	</p0:properties>
-	<p0:properties __ID="45" type="library_service">
-		<p0:properties __ID="46" type="link">
-			<p0:properties __ID="47" type="a"></p0:properties>
-			<p0:properties __ID="48" type="b">
-				<p0:property __ID="49" type="lid_url">file:bin/BuyerAgentBDI.class</p0:property>
+	<p0:properties __ID="48" type="library_service">
+		<p0:properties __ID="49" type="link">
+			<p0:properties __ID="50" type="a"></p0:properties>
+			<p0:properties __ID="51" type="b">
+				<p0:property __ID="52" type="lid_url">file:bin/BuyerAgentBDI.class</p0:property>
 			</p0:properties>
 		</p0:properties>
-		<p0:properties __ID="50" type="link">
-			<p0:properties __ID="51" type="a"></p0:properties>
-			<p0:properties __ID="52" type="b">
-				<p0:property __ID="53" type="lid_url">file:bin/SellerAgentBDI.class</p0:property>
+		<p0:properties __ID="53" type="link">
+			<p0:properties __ID="54" type="a"></p0:properties>
+			<p0:properties __ID="55" type="b">
+				<p0:property __ID="56" type="lid_url">file:bin/SellerAgentBDI.class</p0:property>
 			</p0:properties>
 		</p0:properties>
 	</p0:properties>

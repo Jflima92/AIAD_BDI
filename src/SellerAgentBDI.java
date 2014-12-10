@@ -1,15 +1,9 @@
-import GUI.SellerAgentConfigurations;
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
-import jadex.bdiv3.runtime.ChangeEvent;
-import jadex.bdiv3.runtime.IPlan;
 import jadex.bridge.service.annotation.Service;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
 import jadex.micro.annotation.*;
-
-import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
 
 
 @Agent
@@ -31,6 +25,8 @@ public class SellerAgentBDI implements ISellService {
 	private int stock;
 	private boolean stopIncoming;
 	private Request req;
+	@Belief
+	protected int test;
 
 
 	@Belief
@@ -49,7 +45,7 @@ public class SellerAgentBDI implements ISellService {
 	}
 
 	@Belief
-	public void setPrice(int price) {
+	protected void setPrice(int price) {
 		this.price = price;
 	}
 
@@ -81,9 +77,7 @@ public class SellerAgentBDI implements ISellService {
 
 
 	@Plan(trigger=@Trigger(factchangeds = "req"))
-	public void analyzeRequest(ChangeEvent event) {
-		Request s;
-		s = (Request) event.getValue();
+	public void analyzeRequest(Request s) {
 
 		if(s.getPrice() == this.getPrice())
 		{
@@ -102,46 +96,22 @@ public class SellerAgentBDI implements ISellService {
 
 
 	@Plan(trigger=@Trigger(factchangeds="stock"))
-	public void checkNewStockPlan(ChangeEvent event, IPlan plan) {
-		Integer v = (Integer) event.getValue();
-		if(v > 50)
-		{
-			System.out.println("Stock is getting full, start promotion.");
-			this.setPrice(price-5);
-		}
-		else
-		{
-			System.out.println("New Stock Size: " + v);
-		}
+	public void checkNewStockPlan(int v) {
+		//TODO
 	}
+
 
 
 	@AgentCreated
 	public void init() {
-		System.out.println("here");
-
-		product = (String) agent.getArgument("product");
-		price = (Integer) agent.getArgument("initPrice");
-		stock = (Integer) agent.getArgument("initStock");
+		this.product = (String) agent.getArgument("product");
+		this.price = (Integer) agent.getArgument("initPrice");
+		this.stock = (Integer) agent.getArgument("initStock");
 		stopIncoming = false;
-
-		/*this.product = configurations.getInsertProductNameTextField().toString();
-		this.price = configurations.getInsertInitialPriceTextField();
-		this.stock = configurations.getInitialStockTextField();
-		this.stopIncoming = false;*/
-
-
-		/*this.product = "Samsung Galaxy S5";
-		this.price = 729;
-		this.stock = 25;
-		this.stopIncoming = false;*/
-
 	}
 
 	@AgentBody
 	public void body() {
-
-		agent.waitForDelay(1000).get();
 
 		while(!stopIncoming) {
 

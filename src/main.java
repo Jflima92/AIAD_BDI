@@ -31,27 +31,6 @@ public class main {
         cms = SServiceProvider.getService(platform.getServiceProvider(),
                 IComponentManagementService.class, RequiredServiceInfo.SCOPE_PLATFORM).get(sus);
             JFrame Frame = new Menu(cms, sus);
-
-
-        /*IComponentIdentifier cid = cms.createComponent("/home/jorgelima/workspace/AIAD/bin/SellerAgentBDI.class", null).getFirstResult(sus);
-        System.out.println("Started Seller Agent component: " + cid);*/
-
-        /*SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                cms[0] = SServiceProvider.getService(platform.getServiceProvider(),
-                        IComponentManagementService.class, RequiredServiceInfo.SCOPE_PLATFORM).get(sus);
-                MainMenu app = null;
-                try {
-                    app = new MainMenu(cms[0],sus);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                app.setVisible(true);
-                System.out.println("cenass");
-            }
-        });*/
-
-
     }
 
 
