@@ -104,8 +104,9 @@ public class SellerAgentBDI implements ISellService {
 
 
 	@Plan(trigger = @Trigger(factchangeds = "stock"))
-	public void checkNewStockPlan(int v) {
-		//TODO
+	public void checkNewStockPlan(int v)
+	{
+		System.out.println("New stock: " + v);
 	}
 
 
@@ -131,12 +132,24 @@ public class SellerAgentBDI implements ISellService {
 	}
 
 	@Override
-	public IFuture<Boolean> requireProposal(final Request r) {
+	public IFuture<Boolean> requireProposal(Request r) {
+
 
 		if (r.getProduct().equals(this.product) && r.getNumberOfItems() <= this.getStock()) {
 			System.out.println("New request received! ");
+			int i = 0;
+			for(IBuyService service: SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).get())
+			{
+				i++;
+				System.out.println(i);
+			}
 
-			SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
+
+			Proposal p = new Proposal(product, r, price);
+			r.ba.sendProposal(p);
+
+
+			/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
 			{
 				public void intermediateResultAvailable(IBuyService is) {
 
@@ -145,7 +158,7 @@ public class SellerAgentBDI implements ISellService {
 					is.sendProposal(p);
 
 				}
-			});
+			});*/
 			return new Future<Boolean>(true);
 		}
 		System.out.println("The request was not accepted, either product or quantity are invalid");

@@ -1,8 +1,11 @@
 
-public class Request {
-	
-	private String product;
-	private int numberOfItems;
+public class Request implements Cloneable {
+
+
+	public String product;
+	public int numberOfItems;
+	public BuyerAgentBDI ba;
+
 	
 	public Request(String prod, int noi)
 	{
@@ -13,14 +16,12 @@ public class Request {
 	public String getProduct() {
 		return product;
 	}
-	public void setProduct(String product) {
-		this.product = product;
-	}
 
 	public int getNumberOfItems() {
 		return numberOfItems;
 	}
-	public void setNumberOfItems(int numberOfItems) {
-		this.numberOfItems = numberOfItems;
+
+	public Request clone() throws CloneNotSupportedException {
+		return (Request) super.clone();
 	}
 }

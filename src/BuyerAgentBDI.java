@@ -44,14 +44,19 @@ public class BuyerAgentBDI implements IBuyService {
 	public void body()
 	{
 		System.out.println("Estou no body");
-		SServiceProvider.getServices(agent.getServiceProvider(), ISellService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<ISellService>()
-				{
-			public void intermediateResultAvailable(ISellService is) {
+			SServiceProvider.getServices(agent.getServiceProvider(), ISellService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<ISellService>() {
+				public void intermediateResultAvailable(ISellService is) {
 
-			is.requireProposal(r);
+					System.out.println(r.getNumberOfItems());
 
-			}
-				});
+					try {
+						is.requireProposal(r.clone());
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			});
 
 		System.out.println("SIZE: " + allProposals.size());
 	}
