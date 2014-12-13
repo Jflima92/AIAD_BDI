@@ -1,9 +1,15 @@
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
+import jadex.bridge.IComponentIdentifier;
+import jadex.bridge.service.RequiredServiceInfo;
 import jadex.bridge.service.annotation.Service;
+import jadex.bridge.service.search.SServiceProvider;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
+import jadex.commons.future.IntermediateDefaultResultListener;
 import jadex.micro.annotation.*;
+
+import java.util.ArrayList;
 
 
 @Agent
@@ -24,7 +30,10 @@ public class SellerAgentBDI implements ISellService {
 	private int price;
 	private int stock;
 	private boolean stopIncoming;
-	private Request req;
+
+	@Belief
+	private ArrayList<Request> requests;
+
 	@Belief
 	protected int test;
 
@@ -49,37 +58,37 @@ public class SellerAgentBDI implements ISellService {
 		this.price = price;
 	}
 
-	@Belief
-	public Request getReq() {
-		return req;
-	}
-
-	@Belief
-	public void setReq(Request req) {
-		this.req = req;
-	}
-
 
 	@Goal
-	public class queryBuyerAgent
-	{
+	public class queryBuyerAgent {
 
 		@GoalResult
 		protected Request re;
 
 
-		public queryBuyerAgent(Request r)
-		{
+		public queryBuyerAgent(Request r) {
 			this.re = r;
 		}
 
 	}
 
 
-	@Plan(trigger=@Trigger(factchangeds = "req"))
-	public void analyzeRequest(Request s) {
+	@Plan(trigger = @Trigger(factaddeds = "requests"))
+	public void analyzeRequest() {
+		System.out.println("CENASSS");
 
-		if(s.getPrice() == this.getPrice())
+				/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
+				{
+					public void intermediateResultAvailable(IBuyService is) {
+
+						Proposal p = new Proposal(product, s, price);
+						is.sendProposal(p);
+
+					}
+				});*/
+
+
+		/*if(s.getPrice() == this.getPrice())
 		{
 			System.out.println("The price was matched, checking number availability...");
 			agent.waitForDelay(500);
@@ -91,15 +100,15 @@ public class SellerAgentBDI implements ISellService {
 			}
 		}
 		else
-			System.out.println("Price not matched, please send a better request!");
+			System.out.println("Price not matched, please send a better request!");*/
 	}
 
 
-	@Plan(trigger=@Trigger(factchangeds="stock"))
-	public void checkNewStockPlan(int v) {
-		//TODO
+	@Plan(trigger = @Trigger(factchangeds = "stock"))
+	public void checkNewStockPlan(int v)
+	{
+		System.out.println("New stock: " + v);
 	}
-
 
 
 	@AgentCreated
@@ -113,7 +122,7 @@ public class SellerAgentBDI implements ISellService {
 	@AgentBody
 	public void body() {
 
-		while(!stopIncoming) {
+		while (!stopIncoming) {
 
 			System.out.println("---");
 			System.out.println("Recebi 10 produtos");
@@ -124,16 +133,56 @@ public class SellerAgentBDI implements ISellService {
 	}
 
 	@Override
-	public IFuture<Boolean> buyRequest(Request r) {
+	public IFuture<Boolean> requireProposal(Request r) {
 
-		if(r.getProduct().equals(this.product))
-		{
-			this.setReq(r);
-			System.out.println("New request received for approval! ");
+
+		if (r.getProduct().equals(this.product) && r.getNumberOfItems() <= this.getStock()) {
+			System.out.println("New request received! ");
+
+			IComponentIdentifier cid = r.ba.agent.getComponentIdentifier();
+			System.out.println("cid for agent: " + cid);
+
+			/*SServiceProvider.getService(r.ba.agent.getServiceProvider(), cid, IBuyService.class).addResultListener(new IntermediateDefaultResultListener<IBuyService>(){
+				public void intermediateResultAvailable(IBuyService is) {
+
+					System.out.println("AQUI");
+					Proposal p = new Proposal(product, r, price);
+					is.sendProposal(p);
+
+				}
+			});*/
+
+			Proposal p = new Proposal(product, r, price);
+			r.ba.sendProposal(p.clone());
+
+
+
+
+
+
+
+
+			/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
+			{
+				public void intermediateResultAvailable(IBuyService is) {
+
+					System.out.println("AQUI");
+					Proposal p = new Proposal(product, r, price);
+					is.sendProposal(p);
+
+				}
+			});*/
 			return new Future<Boolean>(true);
 		}
-		System.out.println("Não vendo o que está a comprar :(!");
+		System.out.println("The request was not accepted, either product or quantity are invalid");
 		return new Future<Boolean>(false);
+	}
+
+
+	@Override
+	public IFuture<Boolean> buyRequest(Request r) {
+
+		return null;
 	}
 }
 
