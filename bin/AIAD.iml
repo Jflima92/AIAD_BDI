@@ -95,5 +95,6 @@
         <jarDirectory url="file://$USER_HOME$/Transferências/jadex-2.5-SNAPSHOT/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
