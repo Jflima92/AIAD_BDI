@@ -35,8 +35,9 @@ public class BuyerAgentBDI implements IBuyService {
 		product = (String) 	agent.getArgument("product");
 		desiredPrice = (Integer) agent.getArgument("desiredPrice");
 		numberOfUnits = (Integer) agent.getArgument("nou");
+		allProposals = new ArrayList<Proposal>();
 
-		r = new Request(product, numberOfUnits);
+		r = new Request(product, numberOfUnits, this);
 
 	}
 
@@ -49,27 +50,21 @@ public class BuyerAgentBDI implements IBuyService {
 
 					System.out.println(r.getNumberOfItems());
 
-					try {
 						is.requireProposal(r.clone());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-
 				}
 			});
 
-		System.out.println("SIZE: " + allProposals.size());
 	}
-
 
 	@Override
 	public IFuture<Boolean> sendProposal(Proposal p) {
 
 		System.out.println("Buyer received a valid proposal, analysing...");
+
 		if(p.getProduct().equals(this.product))
 		{
 			allProposals.add(p);
-
+			System.out.println("SIZE: " + allProposals.size());
 			return new Future<Boolean>(true);
 		}
 

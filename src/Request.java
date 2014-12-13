@@ -1,5 +1,6 @@
+import jadex.bridge.IComponentIdentifier;
 
-public class Request implements Cloneable {
+public class Request extends CloneableObject {
 
 
 	public String product;
@@ -7,8 +8,9 @@ public class Request implements Cloneable {
 	public BuyerAgentBDI ba;
 
 	
-	public Request(String prod, int noi)
+	public Request(String prod, int noi, BuyerAgentBDI ba)
 	{
+		this.ba = ba;
 		this.product = prod;
 		this.numberOfItems = noi;
 	}
@@ -21,7 +23,7 @@ public class Request implements Cloneable {
 		return numberOfItems;
 	}
 
-	public Request clone() throws CloneNotSupportedException {
+	public Request clone() {
 		return (Request) super.clone();
 	}
 }

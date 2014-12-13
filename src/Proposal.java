@@ -1,7 +1,7 @@
 /**
  * Created by jorgelima on 10-12-2014.
  */
-public class Proposal {
+public class Proposal extends CloneableObject {
 
 
     private String product;
@@ -31,5 +31,9 @@ public class Proposal {
 
     public Request getR() {
         return r;
+    }
+
+    public Proposal clone() {
+        return (Proposal)super.clone();
     }
 }

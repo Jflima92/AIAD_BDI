@@ -1,5 +1,6 @@
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
+import jadex.bridge.IComponentIdentifier;
 import jadex.bridge.service.RequiredServiceInfo;
 import jadex.bridge.service.annotation.Service;
 import jadex.bridge.service.search.SServiceProvider;
@@ -137,16 +138,28 @@ public class SellerAgentBDI implements ISellService {
 
 		if (r.getProduct().equals(this.product) && r.getNumberOfItems() <= this.getStock()) {
 			System.out.println("New request received! ");
-			int i = 0;
-			for(IBuyService service: SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).get())
-			{
-				i++;
-				System.out.println(i);
-			}
 
+			IComponentIdentifier cid = r.ba.agent.getComponentIdentifier();
+			System.out.println("cid for agent: " + cid);
+
+			/*SServiceProvider.getService(r.ba.agent.getServiceProvider(), cid, IBuyService.class).addResultListener(new IntermediateDefaultResultListener<IBuyService>(){
+				public void intermediateResultAvailable(IBuyService is) {
+
+					System.out.println("AQUI");
+					Proposal p = new Proposal(product, r, price);
+					is.sendProposal(p);
+
+				}
+			});*/
 
 			Proposal p = new Proposal(product, r, price);
-			r.ba.sendProposal(p);
+			r.ba.sendProposal(p.clone());
+
+
+
+
+
+
 
 
 			/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
