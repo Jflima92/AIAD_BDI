@@ -1,9 +1,13 @@
 package GUI;
 
+import Logic.ISellService;
+import Logic.SellerAgentBDI;
 import jadex.bridge.IComponentIdentifier;
+import jadex.bridge.IExternalAccess;
+import jadex.bridge.service.search.SServiceProvider;
 import jadex.bridge.service.types.cms.CreationInfo;
 import jadex.bridge.service.types.cms.IComponentManagementService;
-import jadex.commons.future.ThreadSuspendable;
+import jadex.commons.future.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +23,7 @@ public class Menu extends JFrame {
 
     private ThreadSuspendable sus;
     private IComponentManagementService cms;
+    private IExternalAccess platform;
 
     private JTabbedPane tabbedPane1;
     private JPanel CreateAgentPanel;
@@ -46,11 +51,12 @@ public class Menu extends JFrame {
     private Integer SellerAgentCount;
     private Integer BuyerAgentCount;
 
-    public Menu(IComponentManagementService cms, ThreadSuspendable sus)
+    public Menu(IComponentManagementService cms, ThreadSuspendable sus, IExternalAccess platform)
     {
         super("Electronic Agent Market");
         this.cms = cms;
         this.sus = sus;
+        this.platform = platform;
         SellersInfoPanel.setLayout(new BoxLayout(SellersInfoPanel, BoxLayout.PAGE_AXIS));
         BuyersInfoPanel.setLayout(new BoxLayout(BuyersInfoPanel, BoxLayout.PAGE_AXIS));
 
@@ -97,7 +103,7 @@ public class Menu extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            startSellerAgent(cms, sus);
+            startSellerAgent(cms, sus, platform );
 
         }
     }
@@ -106,12 +112,32 @@ public class Menu extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            startBuyerAgent(cms, sus);
+            startBuyerAgent(cms, sus, platform);
 
         }
     }
+    public class CreateSellerInfoButtonListener implements ActionListener {
 
-    public void startSellerAgent(IComponentManagementService cms, ThreadSuspendable sus) {
+        IComponentIdentifier cid;
+
+        public CreateSellerInfoButtonListener(IComponentIdentifier cid) {
+
+            this.cid = cid;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            SServiceProvider.getService(platform.getServiceProvider(), cid, Logic.ISellService.class).addResultListener(new DefaultResultListener<ISellService>() {
+                @Override
+                public void resultAvailable(ISellService iSellService) {
+                    iSellService.retrieveSeller();
+                }
+            });
+        }
+    }
+
+
+    public void startSellerAgent(IComponentManagementService cms, ThreadSuspendable sus, IExternalAccess platform) {
 
         this.SellerAgentCount = this.SellerAgentCount+1;
         String name = "Agent " + Integer.toString(this.SellerAgentCount);
@@ -119,13 +145,15 @@ public class Menu extends JFrame {
         agentArgs.put("product", this.getInsertProductNameTextField());
         agentArgs.put("initPrice", this.getInsertInitialPriceTextField());
         agentArgs.put("initStock", this.getInitialStockTextField());
-        JLabel Label = new JLabel("Seller " + name);
-        SellersInfoPanel.add(Label);
-        SellersInfoPanel.repaint();
+        JButton Label = new JButton("Seller " + name);
+
+
         CreationInfo SellerInfo = new CreationInfo(agentArgs);
 
         IComponentIdentifier cid = cms.createComponent(name, "Logic.SellerAgentBDI.class", SellerInfo).getFirstResult(sus);
-
+        Label.addActionListener(new CreateSellerInfoButtonListener(cid));
+        SellersInfoPanel.add(Label);
+        SellersInfoPanel.repaint();
         System.out.println(cid.getName());
         System.out.println("Started Seller Agent component: " + cid.getName());
 
@@ -133,7 +161,7 @@ public class Menu extends JFrame {
 
 
 
-    public void startBuyerAgent(IComponentManagementService cms, ThreadSuspendable sus) {
+    public void startBuyerAgent(IComponentManagementService cms, ThreadSuspendable sus, IExternalAccess platform) {
 
         this.BuyerAgentCount = this.BuyerAgentCount+1;
         String name = "Agent " + Integer.toString(this.BuyerAgentCount);

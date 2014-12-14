@@ -32,7 +32,7 @@ public class main {
 
         cms = SServiceProvider.getService(platform.getServiceProvider(),
                 IComponentManagementService.class, RequiredServiceInfo.SCOPE_PLATFORM).get(sus);
-            JFrame Frame = new Menu(cms, sus);
+            JFrame Frame = new Menu(cms, sus, platform);
     }
 
 

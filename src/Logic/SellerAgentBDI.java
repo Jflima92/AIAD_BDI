@@ -132,6 +132,7 @@ public class SellerAgentBDI implements ISellService {
 		achieveGoal = new achieveGoal(objective);
 		this.agent.dispatchTopLevelGoal(achieveGoal);
 		window = new SellerWindow(product, stock, price);
+		window.setVisible(false);
 	}
 
 	@AgentBody
@@ -207,6 +208,13 @@ public class SellerAgentBDI implements ISellService {
 
 			return new Future<Double>(newPrice);
 		}
+	}
+
+	@Override
+	public IFuture<Boolean> retrieveSeller() {
+		System.out.println("estou a meter visivel");
+		window.setVisible(false);
+		return new Future<Boolean>(true);
 	}
 }
 
