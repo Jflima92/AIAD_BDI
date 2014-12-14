@@ -1,3 +1,6 @@
+package Logic;
+
+import GUI.SellerWindow;
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
 import jadex.bridge.IComponentIdentifier;
@@ -5,6 +8,7 @@ import jadex.bridge.service.annotation.Service;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
 import jadex.micro.annotation.*;
+
 import java.util.ArrayList;
 
 
@@ -21,6 +25,7 @@ public class SellerAgentBDI implements ISellService {
 
 	@Agent
 	protected BDIAgent agent;
+	protected SellerWindow window;
 
 	private String product;
 	private double price;
@@ -29,6 +34,7 @@ public class SellerAgentBDI implements ISellService {
 	private double increasePercentage;
 	private boolean stopIncoming;
 	private achieveGoal achieveGoal;
+	private int sales;
 
 	@Belief
 	protected long negotiationTime = 10000;
@@ -73,6 +79,7 @@ public class SellerAgentBDI implements ISellService {
 			this.setStock(increased);
 			System.out.println("Stock Arrived: Plus " + increasePercentage + " Units");
 			System.out.println("Actual Stock: " + this.stock);
+			window.updatestock(stock);
 		}
 
 	}
@@ -83,6 +90,7 @@ public class SellerAgentBDI implements ISellService {
 	{
 		double newPrice = this.price * (Math.pow(1-((this.stock-this.initialStock) / this.initialStock), 0.1));
 		this.setPrice(newPrice);
+		window.updateprice(newPrice);
 	}
 
 	@Plan(trigger=@Trigger(goals=achieveGoal.class))
@@ -116,12 +124,14 @@ public class SellerAgentBDI implements ISellService {
 		this.product = (String) agent.getArgument("product");
 		this.price = (Double) agent.getArgument("initPrice");
 		this.stock = (Double) agent.getArgument("initStock");
+		sales =0;
 		this.increasePercentage = stock * 0.15;
 		this.initialStock = this.stock;
 		stopIncoming = false;
 		int objective = 10000;
 		achieveGoal = new achieveGoal(objective);
 		this.agent.dispatchTopLevelGoal(achieveGoal);
+		window = new SellerWindow(product, stock, price);
 	}
 
 	@AgentBody
@@ -142,6 +152,8 @@ public class SellerAgentBDI implements ISellService {
 
 		IComponentIdentifier cid = agent.getComponentIdentifier();
 		System.out.println("cid for agent Seller: " + cid);
+
+
 		if (r.getProduct().equals(this.product) && this.stock > 0 ) {
 			System.out.println("New request received! ");
 
@@ -168,19 +180,24 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Boolean> acceptedProposal(Proposal p) {
 
-		System.out.println("Recebi a aceitação da proposta, a efectuar venda!");
+		System.out.println("Recebi a aceitação da proposta, a efectuar venda a "+ p.getPrice() +"€");
+		sales+= p.getR().getNumberOfItems();;
 		IComponentIdentifier cid = agent.getComponentIdentifier();
 		System.out.println("I am agent Seller: " + cid.getName());
 		this.stock = this.stock-p.getR().getNumberOfItems();
 		this.achieveGoal.totalMissingMoney = this.achieveGoal.totalMissingMoney - ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
 		this.achieveGoal.totalUnits = this.achieveGoal.totalUnits + ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
 		System.out.println("Current earned money: " + this.achieveGoal.totalUnits);
+		double avgprice = achieveGoal.totalUnits/sales;
+		window.update(stock, this.achieveGoal.totalUnits, avgprice);
+		window.addProposal(p);
 		return new Future<Boolean>(true);
+
 	}
 
 	@Override
 	public IFuture<Double> negotiation(Proposal p, int count) {
-		System.out.println("Negotiation attempt nº: " + count +" !");
+		System.out.println("Logic.Negotiation attempt nº: " + count +" !");
 		if(count == 4)
 		{
 			return new Future<Double>(-1.0);

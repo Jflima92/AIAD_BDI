@@ -48,7 +48,7 @@ public class MainMenu extends JFrame {
     public void startSellerAgent(IComponentManagementService cms, ThreadSuspendable sus) {
 
 
-        IComponentIdentifier cid = cms.createComponent("/home/jorgelima/workspace/AIAD/bin/SellerAgentBDI.class", null).getFirstResult(sus);
+        IComponentIdentifier cid = cms.createComponent("/home/jorgelima/workspace/AIAD/bin/Logic.SellerAgentBDI.class", null).getFirstResult(sus);
         System.out.println(cid.getName());
 
         System.out.println("Started Seller Agent component: " + cid);

@@ -1,3 +1,5 @@
+package Logic;
+
 import GUI.MainMenu;
 import GUI.Menu;
 import jadex.base.Starter;

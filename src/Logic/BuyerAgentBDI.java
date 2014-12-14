@@ -1,3 +1,5 @@
+package Logic;
+
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
 import jadex.bdiv3.runtime.impl.PlanFailureException;
@@ -40,7 +42,7 @@ public class BuyerAgentBDI implements IBuyService {
 
 	@Plan(trigger=@Trigger(goals=PurchasingGoal.class))
 	protected void launchRequestPlan() {
-		/** If a Request is already running, don't launch another */
+		/** If a Logic.Request is already running, don't launch another */
 		if (request != null) {
 			if (!isProcessing) {
 				processProposals();
@@ -102,6 +104,8 @@ public class BuyerAgentBDI implements IBuyService {
 
 	public void processProposals()
 	{
+
+		System.out.println("Processing Proposal");
 		isProcessing = true;
 		int count = 1;
 
@@ -114,7 +118,13 @@ public class BuyerAgentBDI implements IBuyService {
 				double auxPrice = this.desiredPrice;
 				auxPrice = auxPrice*(1+0.1);
 
+				System.out.println("Buyer proposed price: "+ auxPrice);
+
+
+
 				double newPrice = chosen.getSa().negotiation(chosen, count).get();
+
+				System.out.println("Seller proposed price: "+ newPrice);
 
 				if(newPrice == -1.0)
 				{
@@ -124,6 +134,11 @@ public class BuyerAgentBDI implements IBuyService {
 				else if(newPrice <= auxPrice)
 				{
 					System.out.println("estou a aceitar");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					Proposal chosenClone = chosen.clone();
 					chosenClone.setPrice(newPrice);
 					chosen.getSa().acceptedProposal(chosenClone);

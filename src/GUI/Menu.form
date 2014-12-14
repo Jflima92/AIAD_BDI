@@ -95,7 +95,7 @@
                     </constraints>
                     <properties>
                       <labelFor value="e118e"/>
-                      <text value="Insert Max Negotiation Time (Min):"/>
+                      <text value="Insert Max Logic.Negotiation Time (Min):"/>
                     </properties>
                   </component>
                   <component id="e8d93" class="javax.swing.JLabel">
@@ -291,7 +291,7 @@
                     </constraints>
                     <properties>
                       <labelFor value="e118e"/>
-                      <text value="Insert Max Negotiation Time (Min):"/>
+                      <text value="Insert Max Logic.Negotiation Time (Min):"/>
                     </properties>
                   </component>
                   <component id="dc3bd" class="javax.swing.JLabel">

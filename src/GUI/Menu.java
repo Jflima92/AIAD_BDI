@@ -124,7 +124,7 @@ public class Menu extends JFrame {
         SellersInfoPanel.repaint();
         CreationInfo SellerInfo = new CreationInfo(agentArgs);
 
-        IComponentIdentifier cid = cms.createComponent(name, "SellerAgentBDI.class", SellerInfo).getFirstResult(sus);
+        IComponentIdentifier cid = cms.createComponent(name, "Logic.SellerAgentBDI.class", SellerInfo).getFirstResult(sus);
 
         System.out.println(cid.getName());
         System.out.println("Started Seller Agent component: " + cid.getName());
@@ -147,7 +147,7 @@ public class Menu extends JFrame {
         BuyersInfoPanel.repaint();
         CreationInfo BuyerInfo = new CreationInfo(agentArgs);
 
-        IComponentIdentifier cid = cms.createComponent(name, "BuyerAgentBDI.class", BuyerInfo).getFirstResult(sus);
+        IComponentIdentifier cid = cms.createComponent(name, "Logic.BuyerAgentBDI.class", BuyerInfo).getFirstResult(sus);
 
         System.out.println(cid.getName());
         System.out.println("Started Buyer Agent component: " + cid.getName());

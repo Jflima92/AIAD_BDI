@@ -1,3 +1,6 @@
+package Logic;
+
+import Logic.Proposal;
 import jadex.commons.future.IFuture;
 
 public interface IBuyService

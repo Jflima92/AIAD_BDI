@@ -1,4 +1,4 @@
-import jadex.bridge.IComponentIdentifier;
+package Logic;
 
 public class Request extends CloneableObject {
 

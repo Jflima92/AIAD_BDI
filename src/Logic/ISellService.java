@@ -1,3 +1,7 @@
+package Logic;
+
+import Logic.Proposal;
+import Logic.Request;
 import jadex.commons.future.IFuture;
 
 
