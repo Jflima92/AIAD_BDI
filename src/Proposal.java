@@ -5,32 +5,34 @@ public class Proposal extends CloneableObject {
 
 
     private String product;
-    private int price;
+    private double price;
     private Request r;
 
-    public Proposal(String prod, Request r, int price)
+
+    private SellerAgentBDI sa;
+
+    public Proposal(String prod, Request r, double price, SellerAgentBDI seller)
     {
         this.product = prod;
         this.price = price;
         this.r=r;
+        this.sa = seller;
     }
 
     public String getProduct() {
         return product;
     }
-    public void setProduct(String product) {
-        this.product = product;
-    }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
-    }
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public Request getR() {
         return r;
+    }
+
+    public SellerAgentBDI getSa() {
+        return sa;
     }
 
     public Proposal clone() {

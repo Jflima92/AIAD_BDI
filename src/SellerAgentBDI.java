@@ -15,8 +15,8 @@ import java.util.ArrayList;
 @Agent
 @Arguments({
 		@Argument(name="product", clazz=String.class, defaultvalue="N/A"),
-		@Argument(name="initPrice", clazz=Integer.class, defaultvalue="-1"),
-		@Argument(name="initStock", clazz=Integer.class, defaultvalue="-1")
+		@Argument(name="initPrice", clazz=Double.class, defaultvalue="-1"),
+		@Argument(name="initStock", clazz=Double.class, defaultvalue="-1")
 })
 @Service
 @Description("This agent sells products.")
@@ -27,162 +27,144 @@ public class SellerAgentBDI implements ISellService {
 	protected BDIAgent agent;
 
 	private String product;
-	private int price;
-	private int stock;
+	private double price;
+	private double initialStock;
+	private double stock;
+	private double increasePercentage;
 	private boolean stopIncoming;
+
+	@Belief
+	protected long negotiationTime = 10000;
+
+	@Belief(updaterate=10000)
+	protected long time = System.currentTimeMillis();
 
 	@Belief
 	private ArrayList<Request> requests;
 
 	@Belief
-	protected int test;
-
-
-	@Belief
-	public int getStock() {
+	public double getStock() {
 		return stock;
 	}
 
 	@Belief
-	public void setStock(int stock) {
+	public void setStock(double stock) {
 		this.stock = stock;
 	}
 
 	@Belief
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
 	@Belief
-	protected void setPrice(int price) {
+	protected void setPrice(double price) {
+
 		this.price = price;
 	}
 
 
-	@Goal
-	public class queryBuyerAgent {
-
-		@GoalResult
-		protected Request re;
-
-
-		public queryBuyerAgent(Request r) {
-			this.re = r;
+	@Plan(trigger = @Trigger(factchangeds = "time"))
+	public void stockArrival()
+	{
+		double minStock = this.initialStock *0.6;
+		if(stock < minStock) {
+			double increased = stock + increasePercentage;
+			this.setStock(increased);
+			System.out.println("Stock Arrived: Plus " + increasePercentage + " Units");
+			System.out.println("Actual Stock: " + this.stock);
 		}
 
 	}
 
 
 	@Plan(trigger = @Trigger(factaddeds = "requests"))
-	public void analyzeRequest() {
-		System.out.println("CENASSS");
+	public void negotiationPlan() {
 
-				/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
-				{
-					public void intermediateResultAvailable(IBuyService is) {
-
-						Proposal p = new Proposal(product, s, price);
-						is.sendProposal(p);
-
-					}
-				});*/
-
-
-		/*if(s.getPrice() == this.getPrice())
-		{
-			System.out.println("The price was matched, checking number availability...");
-			agent.waitForDelay(500);
-
-			if(s.getNumberOfItems() <= this.getStock())
-			{
-				System.out.println("There is enough stock to provide your request, purchase order confirmed.");
-				this.setStock(this.stock - s.getNumberOfItems());
-			}
-		}
-		else
-			System.out.println("Price not matched, please send a better request!");*/
 	}
 
 
 	@Plan(trigger = @Trigger(factchangeds = "stock"))
-	public void checkNewStockPlan(int v)
+	public void checkNewStockPlan()
 	{
-		System.out.println("New stock: " + v);
+		double newPrice = this.price * (Math.pow(1-((this.stock-this.initialStock) / this.initialStock), 0.1));
+		this.setPrice(newPrice);
 	}
 
 
 	@AgentCreated
 	public void init() {
 		this.product = (String) agent.getArgument("product");
-		this.price = (Integer) agent.getArgument("initPrice");
-		this.stock = (Integer) agent.getArgument("initStock");
+		this.price = (Double) agent.getArgument("initPrice");
+		this.stock = (Double) agent.getArgument("initStock");
+		this.increasePercentage = stock * 0.15;
+		this.initialStock = this.stock;
 		stopIncoming = false;
 	}
 
 	@AgentBody
 	public void body() {
 
-		while (!stopIncoming) {
 
-			System.out.println("---");
-			System.out.println("Recebi 10 produtos");
-			this.setStock(stock + 10);
-			agent.waitForDelay(5000).get();
-			System.out.println("---");
-		}
+	}
+
+	public double calculateNewPrice(Proposal chosen, int count)
+	{
+		double factorQuantidade = (this.stock*1.05)/(chosen.getR().getNumberOfItems()+this.stock);
+		double maxPrice = this.price * (1+(factorQuantidade*0.1)) * Math.pow((1-(double)count/4), 1);
+		return this.price+((maxPrice-this.price));
 	}
 
 	@Override
 	public IFuture<Boolean> requireProposal(Request r) {
 
-
-		if (r.getProduct().equals(this.product) && r.getNumberOfItems() <= this.getStock()) {
+		IComponentIdentifier cid = agent.getComponentIdentifier();
+		System.out.println("cid for agent Seller: " + cid);
+		if (r.getProduct().equals(this.product) && this.stock > 0 ) {
 			System.out.println("New request received! ");
 
-			IComponentIdentifier cid = r.ba.agent.getComponentIdentifier();
-			System.out.println("cid for agent: " + cid);
 
-			/*SServiceProvider.getService(r.ba.agent.getServiceProvider(), cid, IBuyService.class).addResultListener(new IntermediateDefaultResultListener<IBuyService>(){
-				public void intermediateResultAvailable(IBuyService is) {
+			Request req = r.clone();
 
-					System.out.println("AQUI");
-					Proposal p = new Proposal(product, r, price);
-					is.sendProposal(p);
+			if(r.getNumberOfItems() > this.stock)
+			{
 
-				}
-			});*/
+				req.numberOfItems = this.stock;
+			}
 
-			Proposal p = new Proposal(product, r, price);
+			Proposal p = new Proposal(product, req, price, this);
 			r.ba.sendProposal(p.clone());
 
-
-
-
-
-
-
-
-			/*SServiceProvider.getServices(agent.getServiceProvider(), IBuyService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IBuyService>()
-			{
-				public void intermediateResultAvailable(IBuyService is) {
-
-					System.out.println("AQUI");
-					Proposal p = new Proposal(product, r, price);
-					is.sendProposal(p);
-
-				}
-			});*/
 			return new Future<Boolean>(true);
 		}
+
 		System.out.println("The request was not accepted, either product or quantity are invalid");
 		return new Future<Boolean>(false);
 	}
 
 
 	@Override
-	public IFuture<Boolean> buyRequest(Request r) {
+	public IFuture<Boolean> acceptedProposal(Proposal p) {
 
-		return null;
+		System.out.println("Recebi a aceitação da proposta, a efectuar venda!");
+		IComponentIdentifier cid = agent.getComponentIdentifier();
+		System.out.println("I am agent Seller: " + cid.getName());
+		this.stock = this.stock-p.getR().getNumberOfItems();
+		return new Future<Boolean>(true);
+	}
+
+	@Override
+	public IFuture<Double> negotiation(Proposal p, int count) {
+		System.out.println("Negotiation attempt nº: " + count +" !");
+		if(count == 4)
+		{
+			return new Future<Double>(-1.0);
+		}
+		else {
+			double newPrice = calculateNewPrice(p, count);
+
+			return new Future<Double>(newPrice);
+		}
 	}
 }
 

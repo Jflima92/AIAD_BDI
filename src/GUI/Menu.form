@@ -156,7 +156,7 @@
                     </constraints>
                     <properties>
                       <model>
-                        <item value="Pacient "/>
+                        <item value="Pacient"/>
                         <item value="Linear"/>
                         <item value="Impacient"/>
                       </model>
@@ -282,7 +282,7 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <text value="25"/>
+                      <text value="30"/>
                     </properties>
                   </component>
                   <component id="4318d" class="javax.swing.JLabel">

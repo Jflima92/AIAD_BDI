@@ -71,20 +71,20 @@ public class Menu extends JFrame {
         return SinsertProductNameTextField.getText();
     }
 
-    public int getInsertInitialPriceTextField() {
-        return Integer.valueOf(SinsertInitialPriceTextField.getText());
+    public double getInsertInitialPriceTextField() {
+        return Double.valueOf(SinsertInitialPriceTextField.getText());
     }
 
-    public int getInitialStockTextField() {
-        return Integer.valueOf(SinitialStockTextField.getText());
+    public double getInitialStockTextField() {
+        return Double.valueOf(SinitialStockTextField.getText());
     }
 
     public String getBinsertProductNameTextField() {
         return BinsertProductNameTextField.getText();
     }
 
-    public int getBinsertDesiredPriceTextField() {
-        return Integer.valueOf(BinsertDesiredPriceTextField.getText());
+    public double getBinsertDesiredPriceTextField() {
+        return Double.valueOf(BinsertDesiredPriceTextField.getText());
     }
 
     public int getBinsertNumberOfItemsTextField() {

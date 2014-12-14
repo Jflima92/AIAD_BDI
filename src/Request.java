@@ -4,7 +4,7 @@ public class Request extends CloneableObject {
 
 
 	public String product;
-	public int numberOfItems;
+	public double numberOfItems;
 	public BuyerAgentBDI ba;
 
 	
@@ -19,7 +19,7 @@ public class Request extends CloneableObject {
 		return product;
 	}
 
-	public int getNumberOfItems() {
+	public double getNumberOfItems() {
 		return numberOfItems;
 	}
 
