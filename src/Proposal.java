@@ -5,6 +5,9 @@ public class Proposal extends CloneableObject {
 
 
     private String product;
+
+
+
     private double price;
     private Request r;
 
@@ -33,6 +36,10 @@ public class Proposal extends CloneableObject {
 
     public SellerAgentBDI getSa() {
         return sa;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public Proposal clone() {

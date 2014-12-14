@@ -1,14 +1,10 @@
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
 import jadex.bridge.IComponentIdentifier;
-import jadex.bridge.service.RequiredServiceInfo;
 import jadex.bridge.service.annotation.Service;
-import jadex.bridge.service.search.SServiceProvider;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
-import jadex.commons.future.IntermediateDefaultResultListener;
 import jadex.micro.annotation.*;
-
 import java.util.ArrayList;
 
 
@@ -32,11 +28,15 @@ public class SellerAgentBDI implements ISellService {
 	private double stock;
 	private double increasePercentage;
 	private boolean stopIncoming;
+	private achieveGoal achieveGoal;
 
 	@Belief
 	protected long negotiationTime = 10000;
 
-	@Belief(updaterate=10000)
+	@Belief(updaterate=15000)
+	protected long receiveStockTime = System.currentTimeMillis();
+
+	@Belief(updaterate=1000)
 	protected long time = System.currentTimeMillis();
 
 	@Belief
@@ -64,7 +64,7 @@ public class SellerAgentBDI implements ISellService {
 	}
 
 
-	@Plan(trigger = @Trigger(factchangeds = "time"))
+	@Plan(trigger = @Trigger(factchangeds = "receiveStockTime"))
 	public void stockArrival()
 	{
 		double minStock = this.initialStock *0.6;
@@ -78,12 +78,6 @@ public class SellerAgentBDI implements ISellService {
 	}
 
 
-	@Plan(trigger = @Trigger(factaddeds = "requests"))
-	public void negotiationPlan() {
-
-	}
-
-
 	@Plan(trigger = @Trigger(factchangeds = "stock"))
 	public void checkNewStockPlan()
 	{
@@ -91,6 +85,31 @@ public class SellerAgentBDI implements ISellService {
 		this.setPrice(newPrice);
 	}
 
+	@Plan(trigger=@Trigger(goals=achieveGoal.class))
+	protected void launchRequestPlan() {
+		try {
+			agent.wait(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Goal(recur=true)
+	public class achieveGoal {
+		public achieveGoal(int totalToFullfill) {
+			totalMissingMoney = totalToFullfill;
+			totalUnits = 0;
+		}
+
+		public int totalMissingMoney;
+		public int totalUnits;
+
+		@GoalRecurCondition(beliefs="time")
+		public boolean checkRecur() {
+			// The buyer's job is done when all required units have been purchased
+			return totalMissingMoney > 0;
+		}
+	}
 
 	@AgentCreated
 	public void init() {
@@ -100,6 +119,9 @@ public class SellerAgentBDI implements ISellService {
 		this.increasePercentage = stock * 0.15;
 		this.initialStock = this.stock;
 		stopIncoming = false;
+		int objective = 10000;
+		achieveGoal = new achieveGoal(objective);
+		this.agent.dispatchTopLevelGoal(achieveGoal);
 	}
 
 	@AgentBody
@@ -150,6 +172,9 @@ public class SellerAgentBDI implements ISellService {
 		IComponentIdentifier cid = agent.getComponentIdentifier();
 		System.out.println("I am agent Seller: " + cid.getName());
 		this.stock = this.stock-p.getR().getNumberOfItems();
+		this.achieveGoal.totalMissingMoney = this.achieveGoal.totalMissingMoney - ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
+		this.achieveGoal.totalUnits = this.achieveGoal.totalUnits + ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
+		System.out.println("Current earned money: " + this.achieveGoal.totalUnits);
 		return new Future<Boolean>(true);
 	}
 

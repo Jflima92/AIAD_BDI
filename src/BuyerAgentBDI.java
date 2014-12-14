@@ -51,9 +51,9 @@ public class BuyerAgentBDI implements IBuyService {
 
 					allProposals.clear();
 					is.requireProposal(request.clone());
-
 				}
 			});
+
 		}
 
 		throw new PlanFailureException();
@@ -71,6 +71,8 @@ public class BuyerAgentBDI implements IBuyService {
 
 		@GoalRecurCondition(beliefs="time")
 		public boolean checkRecur() {
+			if(allProposals.size() == 0)
+				request = null;
 			// The buyer's job is done when all required units have been purchased
 			return totalMissingUnits != 0;
 		}
@@ -104,6 +106,7 @@ public class BuyerAgentBDI implements IBuyService {
 		int count = 1;
 
 		Proposal chosen = chooseProposal();
+
 		if(chosen.getPrice() > this.desiredPrice)
 		{
 			while(count <= 4)
@@ -121,7 +124,9 @@ public class BuyerAgentBDI implements IBuyService {
 				else if(newPrice <= auxPrice)
 				{
 					System.out.println("estou a aceitar");
-					chosen.getSa().acceptedProposal(chosen);
+					Proposal chosenClone = chosen.clone();
+					chosenClone.setPrice(newPrice);
+					chosen.getSa().acceptedProposal(chosenClone);
 					actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
 
 					allProposals.remove(chosen);
@@ -137,8 +142,6 @@ public class BuyerAgentBDI implements IBuyService {
 
 			chosen.getSa().acceptedProposal(chosen);
 			actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
-
-			System.out.println(actualGoal.totalMissingUnits);
 			allProposals.remove(chosen);
 			request = null;
 
