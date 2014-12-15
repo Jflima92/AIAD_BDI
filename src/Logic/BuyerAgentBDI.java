@@ -161,13 +161,13 @@ public class BuyerAgentBDI implements IBuyService {
 					}
 					Proposal chosenClone = chosen.clone();
 					chosenClone.setPrice(newPrice);
-					chosen.getSa().acceptedProposal(chosenClone);
-					actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
+					if(chosen.getSa().acceptedProposal(chosenClone).get()) {
+						actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
 
-					window.update((int)chosen.getR().getNumberOfItems());
-					System.out.println("------Actualiza progress bar-------");
-					window.addProposal(chosen);
-
+						window.update((int) chosen.getR().getNumberOfItems());
+						System.out.println("------Actualiza progress bar-------");
+						window.addProposal(chosen);
+					}
 					allProposals.remove(chosen);
 					request = null;
 					count = (int)negotiation;

@@ -10,6 +10,7 @@ import jadex.commons.future.Future;
 import jadex.micro.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 @Agent
@@ -191,18 +192,29 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Boolean> acceptedProposal(Proposal p) {
 
-		System.out.println("Recebi a aceitação da proposta, a efectuar venda a "+ p.getPrice() +"€");
-		sales+= p.getR().getNumberOfItems();;
-		IComponentIdentifier cid = agent.getComponentIdentifier();
-		System.out.println("I am agent Seller: " + cid.getName());
-		this.stock = this.stock-p.getR().getNumberOfItems();
-		this.achieveGoal.totalMissingMoney = this.achieveGoal.totalMissingMoney - ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
-		this.achieveGoal.totalUnits = this.achieveGoal.totalUnits + ((int) p.getPrice()* (int)p.getR().getNumberOfItems());
-		System.out.println("Current earned money: " + this.achieveGoal.totalUnits);
-		double avgprice = achieveGoal.totalUnits/sales;
-		window.update(stock, this.achieveGoal.totalUnits, avgprice);
-		window.addProposal(p);
-		return new Future<Boolean>(true);
+
+		Random rand = new Random();
+		int randomNum = 0 + (int)(Math.random()*10);
+		System.out.println("Random " +randomNum);
+		if(randomNum>3) {
+
+			System.out.println("Recebi a aceitação da proposta, a efectuar venda a " + p.getPrice() + "€");
+			sales += p.getR().getNumberOfItems();
+
+			IComponentIdentifier cid = agent.getComponentIdentifier();
+			System.out.println("I am agent Seller: " + cid.getName());
+			this.stock = this.stock - p.getR().getNumberOfItems();
+			this.achieveGoal.totalMissingMoney = this.achieveGoal.totalMissingMoney - ((int) p.getPrice() * (int) p.getR().getNumberOfItems());
+			this.achieveGoal.totalUnits = this.achieveGoal.totalUnits + ((int) p.getPrice() * (int) p.getR().getNumberOfItems());
+			System.out.println("Current earned money: " + this.achieveGoal.totalUnits);
+			double avgprice = achieveGoal.totalUnits / sales;
+			window.update(stock, this.achieveGoal.totalUnits, avgprice);
+			window.addProposal(p);
+			return new Future<Boolean>(true);
+		}
+		System.out.println("Contrato não cumprido, venda cancelada");
+		return new Future<Boolean>(false);
+
 
 	}
 
