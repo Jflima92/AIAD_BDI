@@ -95,7 +95,7 @@
                     </constraints>
                     <properties>
                       <labelFor value="e118e"/>
-                      <text value="Insert Max Logic.Negotiation Time (Min):"/>
+                      <text value="Insert Max Nº of Negotiations :"/>
                     </properties>
                   </component>
                   <component id="e8d93" class="javax.swing.JLabel">
@@ -144,7 +144,7 @@
                     </constraints>
                     <properties>
                       <model>
-                        <item value="Anxious"/>
+                        <item value="Generous"/>
                         <item value="Linear"/>
                         <item value="Greedy"/>
                       </model>
@@ -190,7 +190,7 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <text value="60"/>
+                      <text value="10"/>
                     </properties>
                   </component>
                 </children>
@@ -317,7 +317,7 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <text value="60"/>
+                      <text value="10"/>
                     </properties>
                   </component>
                   <component id="f26cb" class="javax.swing.JComboBox" binding="BECommerceCombo">
@@ -338,7 +338,7 @@
                     </constraints>
                     <properties>
                       <model>
-                        <item value="Anxious"/>
+                        <item value="Generous"/>
                         <item value="Linear"/>
                         <item value="Greedy"/>
                       </model>

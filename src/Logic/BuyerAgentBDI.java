@@ -1,5 +1,6 @@
 package Logic;
 
+import GUI.BuyerWindow;
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
 import jadex.bdiv3.runtime.impl.PlanFailureException;
@@ -19,7 +20,10 @@ import java.util.Comparator;
 @Arguments({
 		@Argument(name="product", clazz=String.class, defaultvalue="N/A"),
 		@Argument(name="desiredPrice", clazz=Double.class, defaultvalue="-1"),
-		@Argument(name="nou", clazz=Integer.class, defaultvalue="-1")
+		@Argument(name="nou", clazz=Integer.class, defaultvalue="-1"),
+		@Argument(name="strategy", clazz=Double.class, defaultvalue="1"),
+		@Argument(name="variation", clazz=Double.class, defaultvalue="5"),
+		@Argument(name="negotiaton", clazz=Double.class, defaultvalue="5")
 })
 @Service
 @Description("This agent buys products.")
@@ -31,11 +35,16 @@ public class BuyerAgentBDI implements IBuyService {
 
 	protected String product;
 	protected double desiredPrice;
+	protected double negotiationPrice;
+	private double strategy;
+	private double variation;
+	private double negotiation;
 	protected int numberOfUnits;
 	protected Request request;
 	protected ArrayList<Proposal> allProposals;
 	protected PurchasingGoal actualGoal;
 	protected Boolean isProcessing;
+	protected BuyerWindow window;
 
 	@Belief(updaterate=2000)
 	protected long time = System.currentTimeMillis();
@@ -86,8 +95,15 @@ public class BuyerAgentBDI implements IBuyService {
 		product = (String) 	agent.getArgument("product");
 		desiredPrice = (Double) agent.getArgument("desiredPrice");
 		numberOfUnits = (Integer) agent.getArgument("nou");
+		this.strategy= (Double)agent.getArgument("strategy");
+		this.variation = (Double) agent.getArgument("variation");
+		this.negotiation = (Double) agent.getArgument("negotiation");
 		allProposals = new ArrayList<Proposal>();
 		isProcessing = false;
+		negotiationPrice=desiredPrice;
+
+		window = new BuyerWindow(product, numberOfUnits, desiredPrice);
+		window.setVisible(false);
 
 
 		actualGoal = new PurchasingGoal(numberOfUnits);
@@ -113,11 +129,13 @@ public class BuyerAgentBDI implements IBuyService {
 
 		if(chosen.getPrice() > this.desiredPrice)
 		{
-			while(count <= 4)
+			while(count <= negotiation)
 			{
-				double auxPrice = this.desiredPrice;
-				auxPrice = auxPrice*(1+0.1);
+				double auxPrice = this.negotiationPrice;
+				auxPrice = auxPrice+ ((auxPrice*(1+(variation/100))-auxPrice)*Math.pow(((double)count/negotiation),strategy));
+				negotiationPrice=auxPrice;
 
+				System.out.println();
 				System.out.println("Buyer proposed price: "+ auxPrice);
 
 
@@ -128,7 +146,9 @@ public class BuyerAgentBDI implements IBuyService {
 
 				if(newPrice == -1.0)
 				{
-					System.out.println("Attempt to negotiate failed!");
+					System.out.println("Seller refused to keep negotiation!");
+					negotiationPrice= desiredPrice;
+
 
 				}
 				else if(newPrice <= auxPrice)
@@ -144,13 +164,22 @@ public class BuyerAgentBDI implements IBuyService {
 					chosen.getSa().acceptedProposal(chosenClone);
 					actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
 
+					window.update((int)chosen.getR().getNumberOfItems());
+					System.out.println("------Actualiza progress bar-------");
+					window.addProposal(chosen);
+
 					allProposals.remove(chosen);
 					request = null;
-					count = 4;
+					count = (int)negotiation;
+					negotiationPrice= desiredPrice;
 				}
 
 				count++;
 			}
+			System.out.println("Buyer refused to keep negotiation!");
+
+
+
 
 		}
 		else {
@@ -159,6 +188,9 @@ public class BuyerAgentBDI implements IBuyService {
 			actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
 			allProposals.remove(chosen);
 			request = null;
+			window.update((int)chosen.getR().getNumberOfItems());
+			System.out.println("------Actualiza progress bar-------");
+
 
 		}
 
@@ -214,5 +246,15 @@ public class BuyerAgentBDI implements IBuyService {
 
 		}
 	}
+
+
+	@Override
+	public IFuture<Boolean> retrieveBuyer() {
+
+		window.setVisible(true);
+		return new Future<Boolean>(true);
+	}
+
+
 
 }

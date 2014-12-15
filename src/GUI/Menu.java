@@ -1,5 +1,6 @@
 package GUI;
 
+import Logic.IBuyService;
 import Logic.ISellService;
 import Logic.SellerAgentBDI;
 import jadex.bridge.IComponentIdentifier;
@@ -85,6 +86,50 @@ public class Menu extends JFrame {
         return Double.valueOf(SinitialStockTextField.getText());
     }
 
+    public double getSinsertMaxNegTime() {
+        return Double.valueOf(SinsertMaxNegTime.getText());
+    }
+
+
+
+
+    public double getSECommerceCombo() {
+
+        String strategy = SECommerceCombo.getSelectedItem().toString();
+        double strategyvalue=1;
+        if(strategy=="Pacient"){
+            strategyvalue = 2;
+        }
+        if (strategy =="Linear"){
+            strategyvalue= 1;
+        }
+        if(strategy=="Impacient"){
+            strategyvalue= 0.2;
+        }
+        return Double.valueOf(strategyvalue);
+
+
+
+
+    }
+
+    public double getSVariationPercentageCombo() {
+        String strategy = SVariationPercentageCombo.getSelectedItem().toString();
+        double strategyvalue=1;
+        if(strategy=="Generous"){
+            strategyvalue = 20;
+        }
+        if (strategy =="Linear"){
+            strategyvalue= 10;
+        }
+        if(strategy=="Greedy"){
+            strategyvalue= 5;
+        }
+        return Double.valueOf(strategyvalue);
+    }
+
+
+
     public String getBinsertProductNameTextField() {
         return BinsertProductNameTextField.getText();
     }
@@ -97,7 +142,42 @@ public class Menu extends JFrame {
         return Integer.valueOf(BinsertNumberOfItemsTextField.getText());
     }
 
+    public double getBinsertMaxNegTime() {
+        return Double.valueOf(BinsertMaxNegTime.getText());
+    }
 
+
+    public double getBECommerceCombo() {
+
+        String strategy = BECommerceCombo.getSelectedItem().toString();
+        double strategyvalue=1;
+        if(strategy=="Pacient"){
+            strategyvalue = 2;
+        }
+        if (strategy =="Linear"){
+            strategyvalue= 1;
+        }
+        if(strategy=="Impacient"){
+            strategyvalue= 0.2;
+        }
+        return Double.valueOf(strategyvalue);
+
+    }
+
+    public double getBVariationPercentageCombo() {
+        String strategy = BVariationPercentageCombo.getSelectedItem().toString();
+        double strategyvalue=1;
+        if(strategy=="Generous"){
+            strategyvalue = 20;
+        }
+        if (strategy =="Linear"){
+            strategyvalue= 10;
+        }
+        if(strategy=="Greedy"){
+            strategyvalue= 5;
+        }
+        return Double.valueOf(strategyvalue);
+    }
 
     public class CreateSellerButtonListener implements ActionListener {
 
@@ -136,6 +216,26 @@ public class Menu extends JFrame {
         }
     }
 
+    public class CreateBuyerInfoButtonListener implements ActionListener {
+
+        IComponentIdentifier cid;
+
+        public CreateBuyerInfoButtonListener(IComponentIdentifier cid) {
+
+            this.cid = cid;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            SServiceProvider.getService(platform.getServiceProvider(), cid, Logic.IBuyService.class).addResultListener(new DefaultResultListener<IBuyService>() {
+                @Override
+                public void resultAvailable(IBuyService iBuyService) {
+                    iBuyService.retrieveBuyer();
+                }
+            });
+        }
+    }
+
 
     public void startSellerAgent(IComponentManagementService cms, ThreadSuspendable sus, IExternalAccess platform) {
 
@@ -145,15 +245,24 @@ public class Menu extends JFrame {
         agentArgs.put("product", this.getInsertProductNameTextField());
         agentArgs.put("initPrice", this.getInsertInitialPriceTextField());
         agentArgs.put("initStock", this.getInitialStockTextField());
-        JButton Label = new JButton("Seller " + name);
+
+
+        agentArgs.put("strategy", this.getSECommerceCombo());
+        agentArgs.put("variation", this.getSVariationPercentageCombo());
+        agentArgs.put("negotiation", this.getSinsertMaxNegTime());
+
+
 
 
         CreationInfo SellerInfo = new CreationInfo(agentArgs);
 
         IComponentIdentifier cid = cms.createComponent(name, "Logic.SellerAgentBDI.class", SellerInfo).getFirstResult(sus);
-        Label.addActionListener(new CreateSellerInfoButtonListener(cid));
+        JButton Label = new JButton("Seller " + name);
         SellersInfoPanel.add(Label);
         SellersInfoPanel.repaint();
+
+        Label.addActionListener(new CreateSellerInfoButtonListener(cid));
+
         System.out.println(cid.getName());
         System.out.println("Started Seller Agent component: " + cid.getName());
 
@@ -170,13 +279,19 @@ public class Menu extends JFrame {
         agentArgs.put("product", this.getBinsertProductNameTextField());
         agentArgs.put("desiredPrice", this.getBinsertDesiredPriceTextField());
         agentArgs.put("nou", this.getBinsertNumberOfItemsTextField());
-        JLabel Label = new JLabel("Buyer " + name);
+
+        agentArgs.put("strategy", this.getBECommerceCombo());
+        agentArgs.put("variation", this.getBVariationPercentageCombo());
+        agentArgs.put("negotiation", this.getBinsertMaxNegTime());
+
+        JButton Label = new JButton("Buyer " + name);
         BuyersInfoPanel.add(Label);
         BuyersInfoPanel.repaint();
         CreationInfo BuyerInfo = new CreationInfo(agentArgs);
 
         IComponentIdentifier cid = cms.createComponent(name, "Logic.BuyerAgentBDI.class", BuyerInfo).getFirstResult(sus);
 
+        Label.addActionListener(new CreateBuyerInfoButtonListener(cid));
         System.out.println(cid.getName());
         System.out.println("Started Buyer Agent component: " + cid.getName());
 

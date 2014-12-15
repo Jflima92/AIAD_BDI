@@ -83,7 +83,7 @@ public class SellerWindow extends JFrame {
 		add(new JScrollPane(sales));
         add(AgentArea);
         pack();
-        setVisible(true);
+        setVisible(false);
     }
 
     public void update(double stock, double totalEarned, double avgprice) {

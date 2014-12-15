@@ -16,7 +16,10 @@ import java.util.ArrayList;
 @Arguments({
 		@Argument(name="product", clazz=String.class, defaultvalue="N/A"),
 		@Argument(name="initPrice", clazz=Double.class, defaultvalue="-1"),
-		@Argument(name="initStock", clazz=Double.class, defaultvalue="-1")
+		@Argument(name="initStock", clazz=Double.class, defaultvalue="-1"),
+		@Argument(name="strategy", clazz=Double.class, defaultvalue="1"),
+		@Argument(name="variation", clazz=Double.class, defaultvalue="5"),
+		@Argument(name="negotiaton", clazz=Double.class, defaultvalue="5")
 })
 @Service
 @Description("This agent sells products.")
@@ -32,6 +35,9 @@ public class SellerAgentBDI implements ISellService {
 	private double initialStock;
 	private double stock;
 	private double increasePercentage;
+	private double strategy;
+	private double variation;
+	private double negotiation;
 	private boolean stopIncoming;
 	private achieveGoal achieveGoal;
 	private int sales;
@@ -124,6 +130,10 @@ public class SellerAgentBDI implements ISellService {
 		this.product = (String) agent.getArgument("product");
 		this.price = (Double) agent.getArgument("initPrice");
 		this.stock = (Double) agent.getArgument("initStock");
+		this.strategy= (Double)agent.getArgument("strategy");
+		this.variation = (Double) agent.getArgument("variation");
+		this.negotiation = (Double) agent.getArgument("negotiation");
+
 		sales =0;
 		this.increasePercentage = stock * 0.15;
 		this.initialStock = this.stock;
@@ -144,7 +154,7 @@ public class SellerAgentBDI implements ISellService {
 	public double calculateNewPrice(Proposal chosen, int count)
 	{
 		double factorQuantidade = (this.stock*1.05)/(chosen.getR().getNumberOfItems()+this.stock);
-		double maxPrice = this.price * (1+(factorQuantidade*0.1)) * Math.pow((1-(double)count/4), 1);
+		double maxPrice = this.price * (1+(factorQuantidade*(this.variation/100)) * Math.pow((1-(double)count/negotiation), this.strategy));
 		return this.price+((maxPrice-this.price));
 	}
 
@@ -199,7 +209,7 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Double> negotiation(Proposal p, int count) {
 		System.out.println("Logic.Negotiation attempt nº: " + count +" !");
-		if(count == 4)
+		if(count == negotiation)
 		{
 			return new Future<Double>(-1.0);
 		}
@@ -213,7 +223,7 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Boolean> retrieveSeller() {
 		System.out.println("estou a meter visivel");
-		window.setVisible(false);
+		window.setVisible(true);
 		return new Future<Boolean>(true);
 	}
 }

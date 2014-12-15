@@ -1,9 +1,8 @@
 package Logic;
 
-import GUI.MainMenu;
+
 import GUI.Menu;
 import jadex.base.Starter;
-import jadex.bridge.IComponentIdentifier;
 import jadex.bridge.IExternalAccess;
 import jadex.bridge.service.RequiredServiceInfo;
 import jadex.bridge.service.search.SServiceProvider;
@@ -13,7 +12,6 @@ import jadex.commons.future.ThreadSuspendable;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by jorgelima on 20-11-2014.
