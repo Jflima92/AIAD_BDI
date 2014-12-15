@@ -20,9 +20,20 @@ public class main {
 
     public static void main(String[] args) throws IOException {
 
+        String[] defargs = new String[]
+                {
+                        "-gui", "false",
+                        "-welcome", "false",
+                        "-cli", "false",
+                        "-printpass", "false"
+                };
+        String[] newargs = new String[defargs.length+args.length];
+        System.arraycopy(defargs, 0, newargs, 0, defargs.length);
+        System.arraycopy(args, 0, newargs, defargs.length, args.length);
+
         IComponentManagementService cms;
 
-        IFuture<IExternalAccess> platfut = Starter.createPlatform(args);
+        IFuture<IExternalAccess> platfut = Starter.createPlatform(defargs);
         final ThreadSuspendable sus = new ThreadSuspendable();
         final IExternalAccess platform = platfut.get(sus);
         System.out.println("Started platform: "+platform.getComponentIdentifier());
@@ -30,7 +41,8 @@ public class main {
 
         cms = SServiceProvider.getService(platform.getServiceProvider(),
                 IComponentManagementService.class, RequiredServiceInfo.SCOPE_PLATFORM).get(sus);
-            JFrame Frame = new Menu(cms, sus, platform);
+
+        JFrame Frame = new Menu(cms, sus, platform);
     }
 
 

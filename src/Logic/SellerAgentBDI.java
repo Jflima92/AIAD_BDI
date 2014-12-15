@@ -4,9 +4,12 @@ import GUI.SellerWindow;
 import jadex.bdiv3.BDIAgent;
 import jadex.bdiv3.annotation.*;
 import jadex.bridge.IComponentIdentifier;
+import jadex.bridge.service.RequiredServiceInfo;
 import jadex.bridge.service.annotation.Service;
+import jadex.bridge.service.search.SServiceProvider;
 import jadex.commons.future.IFuture;
 import jadex.commons.future.Future;
+import jadex.commons.future.IntermediateDefaultResultListener;
 import jadex.micro.annotation.*;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ public class SellerAgentBDI implements ISellService {
 	protected SellerWindow window;
 
 	private String product;
+	private boolean isActive;
 	private double price;
 	private double initialStock;
 	private double stock;
@@ -134,6 +138,7 @@ public class SellerAgentBDI implements ISellService {
 		this.strategy= (Double)agent.getArgument("strategy");
 		this.variation = (Double) agent.getArgument("variation");
 		this.negotiation = (Double) agent.getArgument("negotiation");
+		this.isActive  = false;
 
 		sales =0;
 		this.increasePercentage = stock * 0.15;
@@ -142,6 +147,14 @@ public class SellerAgentBDI implements ISellService {
 		int objective = 10000;
 		achieveGoal = new achieveGoal(objective);
 		this.agent.dispatchTopLevelGoal(achieveGoal);
+
+		SServiceProvider.getServices(agent.getServiceProvider(), IManagerService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IManagerService>() {
+			@Override
+			public void intermediateResultAvailable(IManagerService is) {
+				is.addAgentReputation(agent.getAgentName(), 1);
+			}
+		});
+
 		window = new SellerWindow(product, stock, price);
 		window.setVisible(false);
 	}
@@ -162,26 +175,27 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Boolean> requireProposal(Request r) {
 
+
 		IComponentIdentifier cid = agent.getComponentIdentifier();
 		System.out.println("cid for agent Seller: " + cid);
 
+		if(!isActive) {
+			if (r.getProduct().equals(this.product) && this.stock > 0) {
+				System.out.println("New request received! ");
 
-		if (r.getProduct().equals(this.product) && this.stock > 0 ) {
-			System.out.println("New request received! ");
 
+				Request req = r.clone();
 
-			Request req = r.clone();
+				if (r.getNumberOfItems() > this.stock) {
 
-			if(r.getNumberOfItems() > this.stock)
-			{
+					req.numberOfItems = this.stock;
+				}
 
-				req.numberOfItems = this.stock;
+				Proposal p = new Proposal(product, req, price, this);
+				r.ba.sendProposal(p.clone());
+
+				return new Future<Boolean>(true);
 			}
-
-			Proposal p = new Proposal(product, req, price, this);
-			r.ba.sendProposal(p.clone());
-
-			return new Future<Boolean>(true);
 		}
 
 		System.out.println("The request was not accepted, either product or quantity are invalid");
@@ -192,11 +206,11 @@ public class SellerAgentBDI implements ISellService {
 	@Override
 	public IFuture<Boolean> acceptedProposal(Proposal p) {
 
-
+		this.isActive = true;
 		Random rand = new Random();
 		int randomNum = 0 + (int)(Math.random()*10);
 		System.out.println("Random " +randomNum);
-		if(randomNum>3) {
+		if(randomNum>2) {
 
 			System.out.println("Recebi a aceitação da proposta, a efectuar venda a " + p.getPrice() + "€");
 			sales += p.getR().getNumberOfItems();
@@ -210,8 +224,10 @@ public class SellerAgentBDI implements ISellService {
 			double avgprice = achieveGoal.totalUnits / sales;
 			window.update(stock, this.achieveGoal.totalUnits, avgprice);
 			window.addProposal(p);
+			this.isActive = false;
 			return new Future<Boolean>(true);
 		}
+		this.isActive = false;
 		System.out.println("Contrato não cumprido, venda cancelada");
 		return new Future<Boolean>(false);
 

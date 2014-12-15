@@ -50,8 +50,8 @@ public class BuyerAgentBDI implements IBuyService {
 	protected long time = System.currentTimeMillis();
 
 	@Plan(trigger=@Trigger(goals=PurchasingGoal.class))
-	protected void launchRequestPlan() {
-		/** If a Logic.Request is already running, don't launch another */
+	protected void launchRequestPlan() throws InterruptedException {
+
 		if (request != null) {
 			if (!isProcessing) {
 				processProposals();
@@ -125,7 +125,7 @@ public class BuyerAgentBDI implements IBuyService {
 		isProcessing = true;
 		int count = 1;
 
-		Proposal chosen = chooseProposal();
+		final Proposal chosen = chooseProposal();
 
 		if(chosen.getPrice() > this.desiredPrice)
 		{
@@ -162,12 +162,31 @@ public class BuyerAgentBDI implements IBuyService {
 					Proposal chosenClone = chosen.clone();
 					chosenClone.setPrice(newPrice);
 					if(chosen.getSa().acceptedProposal(chosenClone).get()) {
+
 						actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
+
+						SServiceProvider.getServices(agent.getServiceProvider(), IManagerService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IManagerService>()
+						{
+							@Override
+							public void intermediateResultAvailable(IManagerService is) {
+								is.submitEvaluation(chosen.getSa().agent.getAgentName(), true);
+							}
+						});
 
 						window.update((int) chosen.getR().getNumberOfItems());
 						System.out.println("------Actualiza progress bar-------");
 						window.addProposal(chosen);
 					}
+					else{
+
+					SServiceProvider.getServices(agent.getServiceProvider(), IManagerService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IManagerService>()
+					{
+						@Override
+						public void intermediateResultAvailable(IManagerService is) {
+							is.submitEvaluation(chosen.getSa().agent.getAgentName(), false);
+						}
+					});}
+
 					allProposals.remove(chosen);
 					request = null;
 					count = (int)negotiation;
@@ -176,22 +195,33 @@ public class BuyerAgentBDI implements IBuyService {
 
 				count++;
 			}
+
 			System.out.println("Buyer refused to keep negotiation!");
-
-
-
-
 		}
 		else {
-
-			chosen.getSa().acceptedProposal(chosen);
-			actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
-			allProposals.remove(chosen);
-			request = null;
-			window.update((int)chosen.getR().getNumberOfItems());
-			System.out.println("------Actualiza progress bar-------");
-
-
+			Proposal chosenClone = chosen.clone();
+			if(chosen.getSa().acceptedProposal(chosenClone).get()) {
+				actualGoal.totalMissingUnits -= chosen.getR().numberOfItems;
+				allProposals.remove(chosen);
+				request = null;
+				window.update((int) chosen.getR().getNumberOfItems());
+				SServiceProvider.getServices(agent.getServiceProvider(), IManagerService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IManagerService>()
+				{
+					@Override
+					public void intermediateResultAvailable(IManagerService is) {
+						is.submitEvaluation(chosen.getSa().agent.getAgentName(), true);
+					}
+				});
+				System.out.println("------Actualiza progress bar-------");
+			}
+			else {
+				SServiceProvider.getServices(agent.getServiceProvider(), IManagerService.class, RequiredServiceInfo.SCOPE_PLATFORM).addResultListener(new IntermediateDefaultResultListener<IManagerService>() {
+					@Override
+					public void intermediateResultAvailable(IManagerService is) {
+						is.submitEvaluation(chosen.getSa().agent.getAgentName(), false);
+					}
+				});
+			}
 		}
 
 		request = null;
@@ -203,14 +233,6 @@ public class BuyerAgentBDI implements IBuyService {
 	{
 		proposalComparator comp = new proposalComparator();
 		Collections.sort(allProposals, comp);
-	/*	for(int i = 0; i< allProposals.size(); i++)
-		{
-			if(allProposals.get(i).getSa().getStock() <=0)
-			{
-				allProposals.remove(i);
-			}
-		}
-*/
 		return allProposals.get(0);
 	}
 

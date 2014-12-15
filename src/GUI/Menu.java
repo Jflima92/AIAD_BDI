@@ -2,6 +2,7 @@ package GUI;
 
 import Logic.IBuyService;
 import Logic.ISellService;
+import Logic.ManagerAgentBDI;
 import Logic.SellerAgentBDI;
 import jadex.bridge.IComponentIdentifier;
 import jadex.bridge.IExternalAccess;
@@ -72,6 +73,7 @@ public class Menu extends JFrame {
         });
         createBuyerAgentButton.addActionListener(new CreateBuyerButtonListener() {
         });
+        cms.createComponent("Manager", "Logic.ManagerAgentBDI.class", null);
     }
 
     public String getInsertProductNameTextField() {

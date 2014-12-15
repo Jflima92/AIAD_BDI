@@ -22,18 +22,18 @@
 	<entries>
 		<entry __ID="1">
 			<key>
-				<p1:String xmlns:p1="typeinfo:java.lang" __ID="2">Starter.console.height</p1:String>
+				<p1:String xmlns:p1="typeinfo:java.lang" __ID="2">Chat.console.height</p1:String>
 			</key>
 			<value>
-				<p1:Double xmlns:p1="typeinfo:java.lang" __ID="3" content="0.998158379373849"></p1:Double>
+				<p1:Double xmlns:p1="typeinfo:java.lang" __ID="3" content="1.0"></p1:Double>
 			</value>
 		</entry>
 		<entry __ID="4">
 			<key>
-				<p1:String xmlns:p1="typeinfo:java.lang" __ID="5">Chat.console.height</p1:String>
+				<p1:String xmlns:p1="typeinfo:java.lang" __ID="5">Starter.console.height</p1:String>
 			</key>
 			<value>
-				<p1:Double xmlns:p1="typeinfo:java.lang" __ID="6" content="1.0"></p1:Double>
+				<p1:Double xmlns:p1="typeinfo:java.lang" __ID="6" content="0.998158379373849"></p1:Double>
 			</value>
 		</entry>
 		<entry __ID="7">
@@ -57,8 +57,8 @@
 	<p0:properties __ID="21" type="window">
 		<p0:property __ID="22" type="width">1152</p0:property>
 		<p0:property __ID="23" type="height">653</p0:property>
-		<p0:property __ID="24" type="x">156</p0:property>
-		<p0:property __ID="25" type="y">205</p0:property>
+		<p0:property __ID="24" type="x">551</p0:property>
+		<p0:property __ID="25" type="y">190</p0:property>
 		<p0:property __ID="26" type="extendedState">0</p0:property>
 		<p0:property __ID="27" type="jccexit">shutdown</p0:property>
 		<p0:property __ID="28" type="saveonexit">true</p0:property>

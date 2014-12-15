@@ -85,10 +85,6 @@ public class BuyerWindow extends JFrame {
             sales.add(row);
 
         }
-
-
-
-
     };
 
     public void addProposal(Proposal p) {
